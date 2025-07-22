@@ -108,7 +108,7 @@ export function SearchComponent() {
             setShowResults(true);
           }}
           onFocus={() => setShowResults(true)}
-          className="pl-10 pr-10 w-64 md:w-80"
+          className="pl-10 pr-10 w-full md:w-64 lg:w-80"
         />
         {isSearching && (
           <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground animate-spin" />
@@ -127,7 +127,7 @@ export function SearchComponent() {
 
       {/* Search Results Dropdown */}
       {showResults && (query || results.length > 0 || error) && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-background border rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto min-w-[320px]">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-background border rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto min-w-[280px] md:min-w-[320px]">
           {isSearching ? (
             <div className="p-4 text-center text-muted-foreground">
               <Loader2 className="h-4 w-4 animate-spin mx-auto mb-2" />
