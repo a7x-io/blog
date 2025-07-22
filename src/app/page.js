@@ -68,158 +68,79 @@ export default async function Home() {
             <p className="text-muted-foreground">Discover insights, tutorials, and stories from the world of web development.</p>
           </div>
 
-          {/* Featured Post Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Featured Post (First Post) */}
-            {posts.length > 0 && (
-              <div className="lg:col-span-2">
-                <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md overflow-hidden h-full">
-                  {/* Large Image Section */}
-                  {posts[0].mainImage && (
-                    <Link href={`/posts/${posts[0].slug?.current || posts[0]._id}`} className="block">
-                      <div className="relative w-full h-64 lg:h-80 overflow-hidden cursor-pointer">
-                        <Image
-                          src={urlFor(posts[0].mainImage).width(800).height(500).url()}
-                          alt={posts[0].title}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          priority
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                        {/* Category badges overlay */}
-                        {posts[0].categories && posts[0].categories.length > 0 && (
-                          <div className="absolute top-4 left-4 flex gap-2">
-                            {posts[0].categories.slice(0, 2).map((category, catIdx) => (
-                              <Badge key={catIdx} variant="secondary" className="text-xs bg-background/90 backdrop-blur">
-                                {category.title}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </Link>
-                  )}
-
-                  {/* Content Section */}
-                  <div className="flex flex-col h-full">
-                    <CardHeader className="pb-4 flex-1">
-                      <Link href={`/posts/${posts[0].slug?.current || posts[0]._id}`}>
-                        <CardTitle className="text-2xl lg:text-3xl font-bold group-hover:text-primary transition-colors cursor-pointer line-clamp-2">
-                          {posts[0].title}
-                        </CardTitle>
-                      </Link>
-                      <CardDescription className="text-base mt-3 line-clamp-4">
-                        {getExcerpt(posts[0].body)}
-                      </CardDescription>
-                    </CardHeader>
-                    
-                    <CardContent className="pt-0">
-                      {/* Author and Date */}
-                      <div className="flex items-center gap-3 mb-4">
-                        <Avatar className="w-10 h-10">
-                          <AvatarImage src={posts[0].author?.image ? urlFor(posts[0].author.image).width(40).height(40).url() : undefined} />
-                          <AvatarFallback className="text-sm">
-                            {posts[0].author?.name?.charAt(0) || 'A'}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <Link
-                            href={`/authors/${posts[0].author?.slug?.current || 'anonymous'}`}
-                            className="text-base font-medium truncate hover:text-primary transition-colors block"
-                          >
-                            {posts[0].author?.name || 'Anonymous'}
-                          </Link>
-                          <p className="text-sm text-muted-foreground">
-                            {formatDate(posts[0].publishedAt)}
-                          </p>
+          {/* Vertical Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {posts.map((post, idx) => (
+              <Card key={post._id} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md overflow-hidden">
+                {/* Image Section - Now Clickable */}
+                {post.mainImage && (
+                  <Link href={`/posts/${post.slug?.current || post._id}`} className="block">
+                    <div className="relative w-full h-48 overflow-hidden cursor-pointer">
+                      <Image
+                        src={urlFor(post.mainImage).width(400).height(300).url()}
+                        alt={post.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        priority={idx < 3}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                      {/* Category badges overlay */}
+                      {post.categories && post.categories.length > 0 && (
+                        <div className="absolute top-4 left-4 flex gap-2">
+                          {post.categories.slice(0, 2).map((category, catIdx) => (
+                            <Badge key={catIdx} variant="secondary" className="text-xs bg-background/90 backdrop-blur">
+                              {category.title}
+                            </Badge>
+                          ))}
                         </div>
-                      </div>
-
-                      {/* Read More Button */}
-                      <Button variant="outline" size="default" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
-                        <Link href={`/posts/${posts[0].slug?.current || posts[0]._id}`}>
-                          Read More
-                        </Link>
-                      </Button>
-                    </CardContent>
-                  </div>
-                </Card>
-              </div>
-            )}
-
-            {/* Secondary Posts */}
-            <div className="lg:col-span-1 space-y-6">
-              {posts.slice(1, 3).map((post, idx) => (
-                <Card key={post._id} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md overflow-hidden">
-                  {/* Smaller Image Section */}
-                  {post.mainImage && (
-                    <Link href={`/posts/${post.slug?.current || post._id}`} className="block">
-                      <div className="relative w-full h-40 overflow-hidden cursor-pointer">
-                        <Image
-                          src={urlFor(post.mainImage).width(400).height(250).url()}
-                          alt={post.title}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                        {/* Category badges overlay */}
-                        {post.categories && post.categories.length > 0 && (
-                          <div className="absolute top-3 left-3 flex gap-1">
-                            {post.categories.slice(0, 1).map((category, catIdx) => (
-                              <Badge key={catIdx} variant="secondary" className="text-xs bg-background/90 backdrop-blur">
-                                {category.title}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    </Link>
-                  )}
-
-                  {/* Content Section */}
-                  <CardHeader className="pb-3">
-                    <Link href={`/posts/${post.slug?.current || post._id}`}>
-                      <CardTitle className="text-lg font-bold group-hover:text-primary transition-colors cursor-pointer line-clamp-2">
-                        {post.title}
-                      </CardTitle>
-                    </Link>
-                    <CardDescription className="text-sm mt-2 line-clamp-2">
-                      {getExcerpt(post.body)}
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent className="pt-0">
-                    {/* Author and Date */}
-                    <div className="flex items-center gap-2 mb-3">
-                      <Avatar className="w-6 h-6">
-                        <AvatarImage src={post.author?.image ? urlFor(post.author.image).width(24).height(24).url() : undefined} />
-                        <AvatarFallback className="text-xs">
-                          {post.author?.name?.charAt(0) || 'A'}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <Link
-                          href={`/authors/${post.author?.slug?.current || 'anonymous'}`}
-                          className="text-xs font-medium truncate hover:text-primary transition-colors block"
-                        >
-                          {post.author?.name || 'Anonymous'}
-                        </Link>
-                        <p className="text-xs text-muted-foreground">
-                          {formatDate(post.publishedAt)}
-                        </p>
-                      </div>
+                      )}
                     </div>
+                  </Link>
+                )}
 
-                    {/* Read More Button */}
-                    <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
-                      <Link href={`/posts/${post.slug?.current || post._id}`}>
-                        Read More
+                {/* Content Section */}
+                <CardHeader className="pb-4">
+                  <Link href={`/posts/${post.slug?.current || post._id}`}>
+                    <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors cursor-pointer line-clamp-2">
+                      {post.title}
+                    </CardTitle>
+                  </Link>
+                  <CardDescription className="text-sm mt-2 line-clamp-3">
+                    {getExcerpt(post.body)}
+                  </CardDescription>
+                </CardHeader>
+                
+                <CardContent className="pt-0">
+                  {/* Author and Date */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={post.author?.image ? urlFor(post.author.image).width(32).height(32).url() : undefined} />
+                      <AvatarFallback className="text-xs">
+                        {post.author?.name?.charAt(0) || 'A'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <Link
+                        href={`/authors/${post.author?.slug?.current || 'anonymous'}`}
+                        className="text-sm font-medium truncate hover:text-primary transition-colors block"
+                      >
+                        {post.author?.name || 'Anonymous'}
                       </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                      <p className="text-xs text-muted-foreground">
+                        {formatDate(post.publishedAt)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Read More Button */}
+                  <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
+                    <Link href={`/posts/${post.slug?.current || post._id}`}>
+                      Read More
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
           {posts.length === 0 && (
