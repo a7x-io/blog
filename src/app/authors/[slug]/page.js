@@ -70,6 +70,10 @@ export default async function AuthorPage({ params }) {
   );
 
   function getExcerpt(body) {
+    // If body is a string, return it directly
+    if (typeof body === 'string') return body;
+    
+    // If body is not an array or is empty, return empty string
     if (!body || !Array.isArray(body)) return "";
     
     // Handle Portable Text blocks
@@ -214,7 +218,16 @@ export default async function AuthorPage({ params }) {
 
                     {/* Excerpt */}
                     <p className="text-muted-foreground mb-4 line-clamp-3">
-                      {post.intro || getExcerpt(post.body) || 'No excerpt available'}
+                      {(() => {
+                        try {
+                          const introText = typeof post.intro === 'string' ? post.intro : getExcerpt(post.intro);
+                          const bodyText = getExcerpt(post.body);
+                          return introText || bodyText || 'No excerpt available';
+                        } catch (error) {
+                          console.error('Error processing excerpt:', error);
+                          return 'No excerpt available';
+                        }
+                      })()}
                     </p>
 
                     {/* Meta */}
