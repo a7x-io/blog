@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,7 +21,21 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        {/* Navbar */}
+        <nav className="w-full bg-ray-surface dark:bg-ray-surface border-b border-ray-muted/40 shadow-ray z-10">
+          <div className="max-w-2xl mx-auto px-4 flex items-center justify-between h-16">
+            <Link href="/" className="text-2xl font-extrabold tracking-tight text-ray-text hover:text-ray-accent transition-colors">My Blog</Link>
+            <div className="flex space-x-6">
+              <Link href="/" className="text-ray-text-muted hover:text-ray-accent transition-colors font-medium">Home</Link>
+              <Link href="/about" className="text-ray-text-muted hover:text-ray-accent transition-colors font-medium">About</Link>
+            </div>
+          </div>
+        </nav>
         {children}
+        {/* Footer */}
+        <footer className="w-full py-6 bg-ray-surface dark:bg-ray-surface border-t border-ray-muted/40 text-center text-ray-text-muted text-sm shadow-ray">
+          &copy; 2024 My Blog. Powered by Next.js & Tailwind CSS.
+        </footer>
       </body>
     </html>
   );
