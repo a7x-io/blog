@@ -158,7 +158,7 @@ export default async function PostPage({ params }) {
               )}
 
               {/* Content */}
-              <div className="prose-headings:scroll-m-20 prose-headings:font-semibold prose-headings:tracking-tight prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:leading-7 prose-p:text-muted-foreground prose-a:text-primary prose-a:underline prose-a:underline-offset-4 hover:prose-a:underline-offset-2 prose-img:rounded-lg prose-img:shadow-md prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6">
+              <div className="prose-headings:scroll-m-20 prose-headings:font-semibold prose-headings:tracking-tight prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:leading-7 prose-p:text-muted-foreground prose-a:text-primary prose-a:underline prose-a:underline-offset-4 hover:prose-a:underline-offset-2 prose-img:rounded-lg prose-img:shadow-md prose-ul:list-disc prose-ul:pl-6 prose-ol:list-decimal prose-ol:pl-6 prose-p:mb-6 prose-p:mt-6 first:prose-p:mt-0 last:prose-p:mb-0">
                 <PortableText 
                   value={post.body} 
                   components={{
@@ -186,12 +186,15 @@ export default async function PostPage({ params }) {
                       code: ({ children }) => <code className="bg-muted px-1 py-0.5 rounded text-sm font-mono">{children}</code>,
                     },
                     list: {
-                      bullet: ({ children }) => <ul className="list-disc pl-6 space-y-2">{children}</ul>,
-                      number: ({ children }) => <ol className="list-decimal pl-6 space-y-2">{children}</ol>,
+                      bullet: ({ children }) => <ul className="list-disc pl-6 space-y-4 my-6">{children}</ul>,
+                      number: ({ children }) => <ol className="list-decimal pl-6 space-y-4 my-6">{children}</ol>,
                     },
                     listItem: {
-                      bullet: ({ children }) => <li className="text-muted-foreground">{children}</li>,
-                      number: ({ children }) => <li className="text-muted-foreground">{children}</li>,
+                      bullet: ({ children }) => <li className="text-muted-foreground leading-relaxed">{children}</li>,
+                      number: ({ children }) => <li className="text-muted-foreground leading-relaxed">{children}</li>,
+                    },
+                    block: {
+                      normal: ({ children }) => <p className="mb-6 leading-relaxed text-muted-foreground">{children}</p>,
                     },
                   }}
                 />
