@@ -173,9 +173,13 @@ export function SearchComponent() {
                             {post.author?.name?.charAt(0) || 'A'}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-xs text-muted-foreground">
+                        <Link
+                          href={`/authors/${post.author?.slug?.current || 'anonymous'}`}
+                          className="text-xs text-muted-foreground hover:text-primary transition-colors"
+                          onClick={(e) => e.stopPropagation()} // Prevent triggering the post link
+                        >
                           {post.author?.name || 'Anonymous'}
-                        </span>
+                        </Link>
                         {post.categories && post.categories.length > 0 && (
                           <>
                             <span className="text-xs text-muted-foreground">•</span>

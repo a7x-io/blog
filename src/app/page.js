@@ -14,7 +14,7 @@ export default async function Home() {
     slug,
     body,
     publishedAt,
-    author->{name, image},
+    author->{name, image, slug},
     mainImage,
     categories[]->{title},
   }`);
@@ -120,9 +120,12 @@ export default async function Home() {
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">
+                      <Link
+                        href={`/authors/${post.author?.slug?.current || 'anonymous'}`}
+                        className="text-sm font-medium truncate hover:text-primary transition-colors block"
+                      >
                         {post.author?.name || 'Anonymous'}
-                      </p>
+                      </Link>
                       <p className="text-xs text-muted-foreground">
                         {formatDate(post.publishedAt)}
                       </p>

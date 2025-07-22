@@ -21,7 +21,7 @@ export async function GET(request) {
         intro,
         body,
         publishedAt,
-        author->{name, image},
+        author->{name, image, slug},
         mainImage,
         categories[]->{title},
       }

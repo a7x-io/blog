@@ -35,7 +35,7 @@ export default async function PostPage({ params }) {
       intro,
       youtubeUrl,
       publishedAt,
-      author->{name, image},
+      author->{name, image, slug},
       mainImage,
       categories[]->{title},
     }`,
@@ -118,7 +118,12 @@ export default async function PostPage({ params }) {
                       {post.author?.name?.charAt(0) || 'A'}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="font-medium">{post.author?.name || 'Anonymous'}</span>
+                  <Link
+                    href={`/authors/${post.author?.slug?.current || 'anonymous'}`}
+                    className="font-medium hover:text-primary transition-colors"
+                  >
+                    {post.author?.name || 'Anonymous'}
+                  </Link>
                 </div>
                 <Separator orientation="vertical" className="h-4" />
                 <div className="flex items-center gap-1">
