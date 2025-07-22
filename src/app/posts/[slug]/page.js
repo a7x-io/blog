@@ -194,7 +194,7 @@ export default async function PostPage({ params }) {
                       number: ({ children }) => <li className="text-muted-foreground leading-relaxed">{children}</li>,
                     },
                     block: {
-                      normal: ({ children }) => <p className="mb-6 leading-relaxed text-muted-foreground">{children}</p>,
+                      normal: ({ children }) => <p className="mb-6 leading-relaxed">{children}</p>,
                     },
                   }}
                 />
