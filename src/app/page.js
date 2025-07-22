@@ -73,7 +73,7 @@ export default async function Home() {
             {/* Featured Post (First Post) */}
             {posts.length > 0 && (
               <div className="lg:col-span-2">
-                <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md overflow-hidden">
+                <Card className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md overflow-hidden h-full">
                   {/* Large Image Section */}
                   {posts[0].mainImage && (
                     <Link href={`/posts/${posts[0].slug?.current || posts[0]._id}`} className="block">
@@ -101,46 +101,48 @@ export default async function Home() {
                   )}
 
                   {/* Content Section */}
-                  <CardHeader className="pb-4">
-                    <Link href={`/posts/${posts[0].slug?.current || posts[0]._id}`}>
-                      <CardTitle className="text-2xl lg:text-3xl font-bold group-hover:text-primary transition-colors cursor-pointer line-clamp-2">
-                        {posts[0].title}
-                      </CardTitle>
-                    </Link>
-                    <CardDescription className="text-base mt-3 line-clamp-4">
-                      {getExcerpt(posts[0].body)}
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent className="pt-0">
-                    {/* Author and Date */}
-                    <div className="flex items-center gap-3 mb-4">
-                      <Avatar className="w-10 h-10">
-                        <AvatarImage src={posts[0].author?.image ? urlFor(posts[0].author.image).width(40).height(40).url() : undefined} />
-                        <AvatarFallback className="text-sm">
-                          {posts[0].author?.name?.charAt(0) || 'A'}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <Link
-                          href={`/authors/${posts[0].author?.slug?.current || 'anonymous'}`}
-                          className="text-base font-medium truncate hover:text-primary transition-colors block"
-                        >
-                          {posts[0].author?.name || 'Anonymous'}
-                        </Link>
-                        <p className="text-sm text-muted-foreground">
-                          {formatDate(posts[0].publishedAt)}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Read More Button */}
-                    <Button variant="outline" size="default" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
+                  <div className="flex flex-col h-full">
+                    <CardHeader className="pb-4 flex-1">
                       <Link href={`/posts/${posts[0].slug?.current || posts[0]._id}`}>
-                        Read More
+                        <CardTitle className="text-2xl lg:text-3xl font-bold group-hover:text-primary transition-colors cursor-pointer line-clamp-2">
+                          {posts[0].title}
+                        </CardTitle>
                       </Link>
-                    </Button>
-                  </CardContent>
+                      <CardDescription className="text-base mt-3 line-clamp-4">
+                        {getExcerpt(posts[0].body)}
+                      </CardDescription>
+                    </CardHeader>
+                    
+                    <CardContent className="pt-0">
+                      {/* Author and Date */}
+                      <div className="flex items-center gap-3 mb-4">
+                        <Avatar className="w-10 h-10">
+                          <AvatarImage src={posts[0].author?.image ? urlFor(posts[0].author.image).width(40).height(40).url() : undefined} />
+                          <AvatarFallback className="text-sm">
+                            {posts[0].author?.name?.charAt(0) || 'A'}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <Link
+                            href={`/authors/${posts[0].author?.slug?.current || 'anonymous'}`}
+                            className="text-base font-medium truncate hover:text-primary transition-colors block"
+                          >
+                            {posts[0].author?.name || 'Anonymous'}
+                          </Link>
+                          <p className="text-sm text-muted-foreground">
+                            {formatDate(posts[0].publishedAt)}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Read More Button */}
+                      <Button variant="outline" size="default" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
+                        <Link href={`/posts/${posts[0].slug?.current || posts[0]._id}`}>
+                          Read More
+                        </Link>
+                      </Button>
+                    </CardContent>
+                  </div>
                 </Card>
               </div>
             )}
