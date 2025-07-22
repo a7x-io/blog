@@ -26,7 +26,7 @@ function formatDate(dateString) {
 }
 
 export default async function PostPage({ params }) {
-  const { slug } = params;
+  const { slug } = await params;
   const post = await sanityClient.fetch(
     `*[_type == "post" && slug.current == $slug][0]{
       _id,
@@ -154,7 +154,29 @@ export default async function PostPage({ params }) {
 
               {/* Content */}
               <div className="prose-headings:scroll-m-20 prose-headings:font-semibold prose-headings:tracking-tight prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:leading-7 prose-p:text-muted-foreground prose-a:text-primary prose-a:underline prose-a:underline-offset-4 hover:prose-a:underline-offset-2 prose-img:rounded-lg prose-img:shadow-md">
-                <PortableText value={post.body} />
+                <PortableText 
+                  value={post.body} 
+                  components={{
+                    types: {
+                      image: ({ value }) => (
+                        <div className="my-8">
+                          <Image
+                            src={urlFor(value).width(800).height(600).url()}
+                            alt={value.alt || 'Blog post image'}
+                            width={800}
+                            height={600}
+                            className="rounded-lg shadow-md w-full h-auto"
+                          />
+                          {value.alt && (
+                            <p className="text-sm text-muted-foreground mt-2 text-center italic">
+                              {value.alt}
+                            </p>
+                          )}
+                        </div>
+                      ),
+                    },
+                  }}
+                />
               </div>
             </CardContent>
           </Card>
