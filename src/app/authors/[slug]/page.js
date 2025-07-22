@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { sanityClient, urlFor } from "@/sanity/lib";
+import { PortableText } from "@portabletext/react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -69,15 +70,21 @@ export default async function AuthorPage({ params }) {
   );
 
   function getExcerpt(body) {
-    if (!body) return "";
+    if (!body || !Array.isArray(body)) return "";
+    
+    // Handle Portable Text blocks
     const text = body
-      .map(block => 
-        block.children 
-          ? block.children.map(child => child.text).join('')
-          : ''
-      )
+      .map(block => {
+        if (block._type === 'block' && block.children) {
+          return block.children
+            .map(child => child.text || '')
+            .join('');
+        }
+        return '';
+      })
       .join(' ')
       .slice(0, 150);
+    
     return text.length > 150 ? text + '...' : text;
   }
 
@@ -206,11 +213,9 @@ export default async function AuthorPage({ params }) {
                     </Link>
 
                     {/* Excerpt */}
-                    {(post.intro || post.body) && (
-                      <p className="text-muted-foreground mb-4 line-clamp-3">
-                        {post.intro || getExcerpt(post.body)}
-                      </p>
-                    )}
+                    <p className="text-muted-foreground mb-4 line-clamp-3">
+                      {post.intro || getExcerpt(post.body) || 'No excerpt available'}
+                    </p>
 
                     {/* Meta */}
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
