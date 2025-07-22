@@ -76,30 +76,47 @@ export default async function AuthorPage({ params }) {
     // If body is not an array or is empty, return empty string
     if (!body || !Array.isArray(body)) return "";
     
-    // Handle Portable Text blocks
-    const text = body
-      .map(block => {
-        if (block._type === 'block' && block.children) {
-          return block.children
-            .map(child => child.text || '')
-            .join('');
-        }
-        return '';
-      })
-      .join(' ')
-      .slice(0, 150);
-    
-    return text.length > 150 ? text + '...' : text;
+    try {
+      // Handle Portable Text blocks
+      const text = body
+        .map(block => {
+          if (block._type === 'block' && block.children && Array.isArray(block.children)) {
+            return block.children
+              .map(child => {
+                if (child && typeof child.text === 'string') {
+                  return child.text;
+                }
+                return '';
+              })
+              .join('');
+          }
+          return '';
+        })
+        .join(' ')
+        .slice(0, 150);
+      
+      return text.length > 150 ? text + '...' : text;
+    } catch (error) {
+      console.error('Error in getExcerpt:', error);
+      return '';
+    }
   }
 
   function formatDate(dateString) {
     if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return "";
+      
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return "";
+    }
   }
 
   return (
@@ -134,7 +151,7 @@ export default async function AuthorPage({ params }) {
             <h1 className="text-3xl md:text-4xl font-bold mb-2">{author.name}</h1>
             {author.bio && (
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
-                {author.bio}
+                {typeof author.bio === 'string' ? author.bio : getExcerpt(author.bio)}
               </p>
             )}
             <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
@@ -220,11 +237,20 @@ export default async function AuthorPage({ params }) {
                     <p className="text-muted-foreground mb-4 line-clamp-3">
                       {(() => {
                         try {
-                          const introText = typeof post.intro === 'string' ? post.intro : getExcerpt(post.intro);
-                          const bodyText = getExcerpt(post.body);
-                          return introText || bodyText || 'No excerpt available';
+                          // Only use intro if it's a string
+                          if (typeof post.intro === 'string' && post.intro.trim()) {
+                            return post.intro.length > 150 ? post.intro.slice(0, 150) + '...' : post.intro;
+                          }
+                          
+                          // Otherwise try to get excerpt from body
+                          const bodyExcerpt = getExcerpt(post.body);
+                          if (bodyExcerpt) {
+                            return bodyExcerpt;
+                          }
+                          
+                          return 'No excerpt available';
                         } catch (error) {
-                          console.error('Error processing excerpt:', error);
+                          console.error('Error in excerpt rendering:', error);
                           return 'No excerpt available';
                         }
                       })()}
@@ -234,7 +260,9 @@ export default async function AuthorPage({ params }) {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
-                        <span>{formatDate(post.publishedAt)}</span>
+                        <span>
+                          {post.publishedAt ? formatDate(post.publishedAt) : 'No date set'}
+                        </span>
                       </div>
                     </div>
                   </div>
