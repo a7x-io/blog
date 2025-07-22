@@ -43,8 +43,10 @@ export default async function Home() {
       {/* Hero Section */}
       <header className="w-full py-16 bg-gradient-to-br from-primary/5 to-secondary/5 border-b">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            My Blog
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 leading-tight">
+            <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              My Blog
+            </span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             A modern blog built with Next.js, Sanity CMS, and shadcn/ui
