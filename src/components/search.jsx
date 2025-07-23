@@ -173,13 +173,16 @@ export function SearchComponent() {
                             {post.author?.name?.charAt(0) || 'A'}
                           </AvatarFallback>
                         </Avatar>
-                        <Link
-                          href={`/authors/${post.author?.slug?.current || 'anonymous'}`}
+                        <button
                           className="text-xs text-muted-foreground hover:text-primary transition-colors"
-                          onClick={(e) => e.stopPropagation()} // Prevent triggering the post link
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            window.location.href = `/authors/${post.author?.slug?.current || 'anonymous'}`;
+                          }}
                         >
                           {post.author?.name || 'Anonymous'}
-                        </Link>
+                        </button>
                         {post.categories && post.categories.length > 0 && (
                           <>
                             <span className="text-xs text-muted-foreground">•</span>

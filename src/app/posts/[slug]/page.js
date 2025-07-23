@@ -105,7 +105,7 @@ export default async function PostPage({ params }) {
               )}
 
               {/* Title */}
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-1.5">
                 {post.title}
               </h1>
 
