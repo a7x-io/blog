@@ -41,6 +41,7 @@ export default function Home() {
   const [lastLoadedIndex, setLastLoadedIndex] = useState(-1);
   const gridRef = useRef();
   const hasRestored = useRef(false);
+  const [categories, setCategories] = useState([]);
 
   // Restore posts and page from sessionStorage on client only
   useEffect(() => {
@@ -84,12 +85,27 @@ export default function Home() {
     }
   }, [page]);
 
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await fetch('/api/categories');
+      if (!res.ok) throw new Error('Failed to load categories');
+      const data = await res.json();
+      setCategories(data.categories || []);
+    } catch (err) {
+      console.error('Failed to load categories:', err);
+    }
+  }, []);
+
   useEffect(() => {
     // Only fetch if we've completed the restoration process
     if (hasRestored.current) {
       fetchPosts();
     }
   }, [page, fetchPosts]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   useEffect(() => {
     if (!hasMore || loading) return;
@@ -170,6 +186,35 @@ export default function Home() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
+          {/* Categories Section */}
+          {categories.length > 0 && (
+            <div className="mb-12">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold">Categories</h2>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/categories">View all categories</Link>
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                {categories.slice(0, 6).map((category) => (
+                  <Button
+                    key={category._id}
+                    variant="outline"
+                    className="h-auto py-2 px-3 flex flex-col items-center gap-1 hover:bg-primary/5"
+                    asChild
+                  >
+                    <Link href={`/categories/${category.slug.current}`}>
+                      <span className="font-medium text-xs">{category.title}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {category.postCount} post{category.postCount !== 1 ? 's' : ''}
+                      </span>
+                    </Link>
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+          
           <div className="mb-12">
             <h2 className="text-3xl font-bold mb-2">Latest Posts</h2>
             <p className="text-muted-foreground">Discover insights, tutorials, and stories from the world of web development.</p>
@@ -180,42 +225,48 @@ export default function Home() {
               <Card
                 key={post._id}
                 className={
-                  "group hover:shadow-lg transition-all duration-300 border-0 shadow-md overflow-hidden" +
+                  "group hover:shadow-lg transition-all duration-300 border-0 shadow-md overflow-hidden cursor-pointer" +
                   (idx > lastLoadedIndex ? " animate-fadeIn" : "")
                 }
+                onClick={() => window.location.href = `/posts/${post.slug?.current || post._id}`}
               >
-                {/* Image Section - Now Clickable */}
+                {/* Image Section */}
                 {post.mainImage && (
-                  <Link href={`/posts/${post.slug?.current || post._id}`} className="block">
-                    <div className="relative w-full h-48 overflow-hidden cursor-pointer">
-                      <Image
-                        src={post.mainImage ? urlFor(post.mainImage).width(400).height(300).url() : ''}
-                        alt={post.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        priority={idx < 3}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                      {/* Category badges overlay */}
-                      {post.categories && post.categories.length > 0 && (
-                        <div className="absolute top-4 left-4 flex gap-2">
-                          {post.categories.slice(0, 2).map((category, catIdx) => (
-                            <Badge key={catIdx} variant="secondary" className="text-xs bg-background/90 backdrop-blur">
-                              {category.title}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </Link>
+                  <div className="relative w-full h-48 overflow-hidden">
+                    <Image
+                      src={post.mainImage ? urlFor(post.mainImage).width(400).height(300).url() : ''}
+                      alt={post.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      priority={idx < 3}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                    {/* Category badges overlay */}
+                    {post.categories && post.categories.length > 0 && (
+                      <div className="absolute top-4 left-4 flex gap-2">
+                        {post.categories.slice(0, 2).map((category, catIdx) => (
+                          <Badge 
+                            key={catIdx} 
+                            variant="secondary" 
+                            className="text-xs bg-background/90 backdrop-blur hover:bg-primary/20 cursor-pointer transition-colors"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              window.location.href = `/categories/${category.slug.current}`;
+                            }}
+                          >
+                            {category.title}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 )}
                 {/* Content Section */}
                 <CardHeader className="pb-4">
-                  <Link href={`/posts/${post.slug?.current || post._id}`}>
-                    <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors cursor-pointer line-clamp-2">
-                      {post.title}
-                    </CardTitle>
-                  </Link>
+                  <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors line-clamp-2">
+                    {post.title}
+                  </CardTitle>
                   <CardDescription className="text-sm mt-2 line-clamp-3">
                     {getExcerpt(post.body)}
                   </CardDescription>
@@ -233,6 +284,7 @@ export default function Home() {
                       <Link
                         href={`/authors/${post.author?.slug?.current || 'anonymous'}`}
                         className="text-sm font-medium truncate hover:text-primary transition-colors block"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         {post.author?.name || 'Anonymous'}
                       </Link>
@@ -242,10 +294,16 @@ export default function Home() {
                     </div>
                   </div>
                   {/* Read More Button */}
-                  <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
-                    <Link href={`/posts/${post.slug?.current || post._id}`}>
-                      Read More
-                    </Link>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.location.href = `/posts/${post.slug?.current || post._id}`;
+                    }}
+                  >
+                    Read More
                   </Button>
                 </CardContent>
               </Card>
