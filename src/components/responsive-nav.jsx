@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { SearchComponent } from '@/components/search';
 import { Menu, X } from 'lucide-react';
 
@@ -24,7 +24,7 @@ export function ResponsiveNav() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              My Blog
+              Raytoolkit
             </span>
           </Link>
           
@@ -59,15 +59,13 @@ export function ResponsiveNav() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 <div className="flex flex-col h-full">
                   {/* Mobile Header */}
                   <div className="flex items-center justify-between mb-6">
                     <span className="text-lg font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                      My Blog
+                      Raytoolkit
                     </span>
-                    <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
-                      <X className="h-4 w-4" />
-                    </Button>
                   </div>
 
                   {/* Mobile Search */}

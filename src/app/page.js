@@ -1,42 +1,150 @@
+"use client";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { sanityClient, urlFor } from "../sanity/lib";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { urlFor } from "../sanity/lib";
+import { Spinner } from "@/components/ui/spinner";
 
-export default async function Home() {
-  const posts = await sanityClient.fetch(`*[_type == "post"]|order(publishedAt desc)[0...10]{
-    _id,
-    title,
-    slug,
-    body,
-    publishedAt,
-    author->{name, image, slug},
-    mainImage,
-    categories[]->{title},
-  }`);
+const PAGE_SIZE = 6;
 
-  function getExcerpt(body) {
-    if (!body || !Array.isArray(body)) return "";
-    const firstBlock = body.find(block => block._type === "block" && Array.isArray(block.children));
-    if (firstBlock && firstBlock.children.length > 0) {
-      return firstBlock.children[0].text;
+function getExcerpt(body) {
+  if (!body || !Array.isArray(body)) return "";
+  const firstBlock = body.find(block => block._type === "block" && Array.isArray(block.children));
+  if (firstBlock && firstBlock.children.length > 0) {
+    return firstBlock.children[0].text;
+  }
+  return "";
+}
+
+function formatDate(dateString) {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+}
+
+export default function Home() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
+  const loaderRef = useRef();
+  const [error, setError] = useState(null);
+  const [lastLoadedIndex, setLastLoadedIndex] = useState(-1);
+  const gridRef = useRef();
+  const hasRestored = useRef(false);
+
+  // Restore posts and page from sessionStorage on client only
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedPosts = sessionStorage.getItem('posts');
+      const savedPage = sessionStorage.getItem('page');
+      const savedHasMore = sessionStorage.getItem('hasMore');
+      if (savedPosts) {
+        const parsedPosts = JSON.parse(savedPosts);
+        setPosts(parsedPosts);
+        setLastLoadedIndex(parsedPosts.length - 1);
+      }
+      if (savedPage) setPage(JSON.parse(savedPage));
+      if (savedHasMore !== null) setHasMore(JSON.parse(savedHasMore));
+      hasRestored.current = true;
     }
-    return "";
-  }
+  }, []);
 
-  function formatDate(dateString) {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
-  }
+  const fetchPosts = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const start = page * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    try {
+      const res = await fetch(`/api/posts?start=${start}&end=${end}`);
+      if (!res.ok) throw new Error('Failed to load posts');
+      const data = await res.json();
+      if (data.posts.length < PAGE_SIZE) setHasMore(false);
+      setPosts(prev => {
+        // Deduplicate by _id
+        const existingIds = new Set(prev.map(p => p._id));
+        const newUniquePosts = data.posts.filter(p => !existingIds.has(p._id));
+        setLastLoadedIndex(prev.length - 1);
+        return [...prev, ...newUniquePosts];
+      });
+    } catch (err) {
+      setError('Failed to load posts. Please try again later.');
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [page]);
+
+  useEffect(() => {
+    // Only fetch if we've completed the restoration process
+    if (hasRestored.current) {
+      fetchPosts();
+    }
+  }, [page, fetchPosts]);
+
+  useEffect(() => {
+    if (!hasMore || loading) return;
+    const observer = new window.IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting) {
+          setPage(prev => prev + 1);
+        }
+      },
+      { threshold: 1 }
+    );
+    const currentLoaderRef = loaderRef.current;
+    if (currentLoaderRef) observer.observe(currentLoaderRef);
+    return () => {
+      if (currentLoaderRef) observer.unobserve(currentLoaderRef);
+    };
+  }, [hasMore, loading]);
+
+  useEffect(() => {
+    if (lastLoadedIndex >= 0 && posts.length > lastLoadedIndex + 1) {
+      // Scroll to the first new post
+      const grid = gridRef.current;
+      if (grid) {
+        const newCard = grid.children[lastLoadedIndex + 1];
+        if (newCard) {
+          newCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }
+  }, [posts, lastLoadedIndex]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('posts', JSON.stringify(posts));
+      sessionStorage.setItem('page', JSON.stringify(page));
+      sessionStorage.setItem('hasMore', JSON.stringify(hasMore));
+    }
+  }, [posts, page, hasMore]);
+
+  // Optionally, restore scroll position:
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedScroll = sessionStorage.getItem('scrollY');
+      if (savedScroll) {
+        window.scrollTo(0, parseInt(savedScroll, 10));
+        sessionStorage.removeItem('scrollY');
+      }
+      // Save scroll position before navigating away
+      const handleBeforeUnload = () => {
+        sessionStorage.setItem('scrollY', window.scrollY);
+      };
+      window.addEventListener('beforeunload', handleBeforeUnload);
+      return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -45,7 +153,7 @@ export default async function Home() {
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-4 leading-tight">
             <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              My Blog
+              Raytoolkit
             </span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -59,7 +167,6 @@ export default async function Home() {
           </div>
         </div>
       </header>
-
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
@@ -67,17 +174,22 @@ export default async function Home() {
             <h2 className="text-3xl font-bold mb-2">Latest Posts</h2>
             <p className="text-muted-foreground">Discover insights, tutorials, and stories from the world of web development.</p>
           </div>
-
           {/* Vertical Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" ref={gridRef}>
             {posts.map((post, idx) => (
-              <Card key={post._id} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md overflow-hidden">
+              <Card
+                key={post._id}
+                className={
+                  "group hover:shadow-lg transition-all duration-300 border-0 shadow-md overflow-hidden" +
+                  (idx > lastLoadedIndex ? " animate-fadeIn" : "")
+                }
+              >
                 {/* Image Section - Now Clickable */}
                 {post.mainImage && (
                   <Link href={`/posts/${post.slug?.current || post._id}`} className="block">
                     <div className="relative w-full h-48 overflow-hidden cursor-pointer">
                       <Image
-                        src={urlFor(post.mainImage).width(400).height(300).url()}
+                        src={post.mainImage ? urlFor(post.mainImage).width(400).height(300).url() : ''}
                         alt={post.title}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -97,7 +209,6 @@ export default async function Home() {
                     </div>
                   </Link>
                 )}
-
                 {/* Content Section */}
                 <CardHeader className="pb-4">
                   <Link href={`/posts/${post.slug?.current || post._id}`}>
@@ -109,7 +220,6 @@ export default async function Home() {
                     {getExcerpt(post.body)}
                   </CardDescription>
                 </CardHeader>
-                
                 <CardContent className="pt-0">
                   {/* Author and Date */}
                   <div className="flex items-center gap-3 mb-4">
@@ -131,7 +241,6 @@ export default async function Home() {
                       </p>
                     </div>
                   </div>
-
                   {/* Read More Button */}
                   <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
                     <Link href={`/posts/${post.slug?.current || post._id}`}>
@@ -142,8 +251,32 @@ export default async function Home() {
               </Card>
             ))}
           </div>
-
-          {posts.length === 0 && (
+          {loading && (
+            <div className="flex justify-center py-8">
+              <Spinner size={36} className="text-primary" />
+            </div>
+          )}
+          {error && (
+            <div className="flex justify-center py-8 text-red-500 font-semibold">
+              {error}
+            </div>
+          )}
+          {!hasMore && posts.length > 0 && !loading && !error && (
+            <div className="flex justify-center py-8 text-muted-foreground">
+              <span>No more posts to load.</span>
+            </div>
+          )}
+          <Button
+            className="mx-auto mt-8"
+            variant="outline"
+            onClick={() => setPage(prev => prev + 1)}
+            disabled={loading || !hasMore}
+            style={{ display: !hasMore || loading ? 'none' : 'block' }}
+          >
+            Load More Posts
+          </Button>
+          <div ref={loaderRef} />
+          {posts.length === 0 && !loading && (
             <Card className="text-center py-12">
               <CardContent>
                 <h3 className="text-xl font-semibold mb-2">No posts yet</h3>

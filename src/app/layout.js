@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "My Blog - Next.js & Sanity CMS",
+  title: "Raytoolkit - Next.js & Sanity CMS",
   description: "A modern blog built with Next.js, Sanity CMS, and shadcn/ui",
 };
 
@@ -38,7 +38,7 @@ export default function RootLayout({ children }) {
             <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
               <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
                 <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-                  © 2024 My Blog. Built with{" "}
+                  © 2024 Raytoolkit. Built with{" "}
                   <Link href="https://nextjs.org" className="font-medium underline underline-offset-4 hover:text-primary">
                     Next.js
                   </Link>

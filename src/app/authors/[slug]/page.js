@@ -31,7 +31,7 @@ export default async function AuthorPage({ params }) {
       <div className="min-h-screen bg-background">
         <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container mx-auto px-4 py-4">
-            <Button variant="ghost" asChild className="mb-4">
+            <Button variant="ghost" asChild>
               <Link href="/" className="flex items-center gap-2">
                 <ArrowLeft className="h-4 w-4" />
                 Back to Home
@@ -124,7 +124,7 @@ export default async function AuthorPage({ params }) {
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4">
-          <Button variant="ghost" asChild className="mb-4">
+          <Button variant="ghost" asChild>
             <Link href="/" className="flex items-center gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back to Home
