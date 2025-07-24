@@ -215,13 +215,112 @@ export default function Home() {
             </div>
           )}
           
-          <div className="mb-12">
-            <h2 className="text-3xl font-bold mb-2">Latest Posts</h2>
-            <p className="text-muted-foreground">Discover insights, tutorials, and stories from the world of web development.</p>
-          </div>
+          {/* Hero Section - Latest Post */}
+          {posts.length > 0 && (
+            <div className="mb-16">
+              <div className="flex items-center gap-3 mb-6">
+                <h2 className="text-3xl font-bold">Latest Post</h2>
+                <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                  New
+                </Badge>
+              </div>
+              
+              {/* Hero Card */}
+              <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg overflow-hidden cursor-pointer bg-gradient-to-br from-card to-card/50">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+                  {/* Image Section */}
+                  {posts[0].mainImage && (
+                    <div className="relative h-64 lg:h-full overflow-hidden">
+                      <Image
+                        src={urlFor(posts[0].mainImage).width(800).height(600).url()}
+                        alt={posts[0].title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        priority={true}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent lg:from-black/30" />
+                      
+                      {/* Category badges overlay */}
+                      {posts[0].categories && posts[0].categories.length > 0 && (
+                        <div className="absolute top-6 left-6 flex gap-2">
+                          {posts[0].categories.slice(0, 2).map((category, catIdx) => (
+                            <Badge 
+                              key={catIdx} 
+                              variant="secondary" 
+                              className="text-sm bg-background/90 backdrop-blur hover:bg-primary/20 cursor-pointer transition-colors"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                window.location.href = `/categories/${category.slug.current}`;
+                              }}
+                            >
+                              {category.title}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Content Section */}
+                  <div className="p-8 flex flex-col justify-center">
+                    <CardTitle className="text-3xl lg:text-4xl font-bold group-hover:text-primary transition-colors line-clamp-3 mb-4">
+                      {posts[0].title}
+                    </CardTitle>
+                    <CardDescription className="text-lg line-clamp-4 mb-6">
+                      {getExcerpt(posts[0].body)}
+                    </CardDescription>
+                    
+                    {/* Author and Date */}
+                    <div className="flex items-center gap-4 mb-6">
+                      <Avatar className="w-12 h-12">
+                        <AvatarImage src={posts[0].author?.image ? urlFor(posts[0].author.image).width(48).height(48).url() : undefined} />
+                        <AvatarFallback className="text-sm">
+                          {posts[0].author?.name?.charAt(0) || 'A'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <Link
+                          href={`/authors/${posts[0].author?.slug?.current || 'anonymous'}`}
+                          className="text-base font-medium truncate hover:text-primary transition-colors block"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {posts[0].author?.name || 'Anonymous'}
+                        </Link>
+                        <p className="text-sm text-muted-foreground">
+                          {formatDate(posts[0].publishedAt)}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Read More Button */}
+                    <Button 
+                      size="lg"
+                      className="w-fit group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.location.href = `/posts/${posts[0].slug?.current || posts[0]._id}`;
+                      }}
+                    >
+                      Read Full Article
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          )}
+          
+          {/* Other Posts Section */}
+          {posts.length > 1 && (
+            <div className="mb-12">
+              <h2 className="text-3xl font-bold mb-2">More Posts</h2>
+              <p className="text-muted-foreground">Discover more insights, tutorials, and stories from the world of web development.</p>
+            </div>
+          )}
+          
           {/* Vertical Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" ref={gridRef}>
-            {posts.map((post, idx) => (
+            {posts.slice(1).map((post, idx) => (
               <Card
                 key={post._id}
                 className={
