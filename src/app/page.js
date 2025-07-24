@@ -226,7 +226,10 @@ export default function Home() {
               </div>
               
               {/* Hero Card */}
-              <Card className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg overflow-hidden cursor-pointer bg-gradient-to-br from-card to-card/50">
+              <Card 
+                className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg overflow-hidden cursor-pointer bg-gradient-to-br from-card to-card/50"
+                onClick={() => window.location.href = `/posts/${posts[0].slug?.current || posts[0]._id}`}
+              >
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                   {/* Image Section */}
                   {posts[0].mainImage && (
@@ -273,7 +276,13 @@ export default function Home() {
                     
                     {/* Author and Date */}
                     <div className="flex items-center gap-4 mb-6">
-                      <Avatar className="w-12 h-12">
+                      <Avatar 
+                        className="w-12 h-12 cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.location.href = `/authors/${posts[0].author?.slug?.current || 'anonymous'}`;
+                        }}
+                      >
                         <AvatarImage src={posts[0].author?.image ? urlFor(posts[0].author.image).width(48).height(48).url() : undefined} />
                         <AvatarFallback className="text-sm">
                           {posts[0].author?.name?.charAt(0) || 'A'}
@@ -282,7 +291,7 @@ export default function Home() {
                       <div className="flex-1 min-w-0">
                         <Link
                           href={`/authors/${posts[0].author?.slug?.current || 'anonymous'}`}
-                          className="text-base font-medium truncate hover:text-primary transition-colors block"
+                          className="text-base font-medium truncate text-foreground hover:text-primary transition-colors block"
                           onClick={(e) => e.stopPropagation()}
                         >
                           {posts[0].author?.name || 'Anonymous'}
@@ -373,7 +382,13 @@ export default function Home() {
                 <CardContent className="pt-0">
                   {/* Author and Date */}
                   <div className="flex items-center gap-3 mb-4">
-                    <Avatar className="w-8 h-8">
+                    <Avatar 
+                      className="w-8 h-8 cursor-pointer hover:ring-2 hover:ring-primary/20 transition-all"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.location.href = `/authors/${post.author?.slug?.current || 'anonymous'}`;
+                      }}
+                    >
                       <AvatarImage src={post.author?.image ? urlFor(post.author.image).width(32).height(32).url() : undefined} />
                       <AvatarFallback className="text-xs">
                         {post.author?.name?.charAt(0) || 'A'}
@@ -382,7 +397,7 @@ export default function Home() {
                     <div className="flex-1 min-w-0">
                       <Link
                         href={`/authors/${post.author?.slug?.current || 'anonymous'}`}
-                        className="text-sm font-medium truncate hover:text-primary transition-colors block"
+                        className="text-sm font-medium truncate text-foreground hover:text-primary transition-colors block"
                         onClick={(e) => e.stopPropagation()}
                       >
                         {post.author?.name || 'Anonymous'}

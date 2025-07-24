@@ -168,9 +168,10 @@ export default function CategoryPage({ params }) {
         {posts.map((post, index) => (
           <Card 
             key={post._id} 
-            className={`transition-all duration-300 hover:shadow-lg ${
+            className={`group transition-all duration-300 hover:shadow-lg cursor-pointer ${
               index > lastLoadedIndex ? 'animate-fadeIn' : ''
             }`}
+            onClick={() => window.location.href = `/posts/${post.slug?.current || post._id}`}
           >
             <CardHeader>
               {post.mainImage && (
@@ -182,14 +183,16 @@ export default function CategoryPage({ params }) {
                   />
                 </div>
               )}
-              <CardTitle className="line-clamp-2">
-                <Link href={`/posts/${post.slug.current}`} className="hover:text-blue-600">
-                  {post.title}
-                </Link>
+              <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
+                {post.title}
               </CardTitle>
               <CardDescription>
                 {post.author && (
-                  <Link href={`/authors/${post.author.slug.current}`} className="hover:text-blue-600">
+                  <Link 
+                    href={`/authors/${post.author.slug.current}`} 
+                    className="text-foreground hover:text-primary transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     By {post.author.name}
                   </Link>
                 )}
@@ -207,7 +210,16 @@ export default function CategoryPage({ params }) {
               {post.categories && post.categories.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {post.categories.map((cat, catIndex) => (
-                    <Badge key={`${cat.title}-${catIndex}`} variant="secondary">
+                    <Badge 
+                      key={`${cat.title}-${catIndex}`} 
+                      variant="secondary"
+                      className="hover:bg-primary/20 cursor-pointer transition-colors"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.location.href = `/categories/${cat.slug.current}`;
+                      }}
+                    >
                       {cat.title}
                     </Badge>
                   ))}
