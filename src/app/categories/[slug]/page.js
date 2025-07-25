@@ -176,7 +176,7 @@ export default function CategoryPage({ params }) {
           >
             <CardHeader>
               {post.mainImage && (
-                <div className="aspect-video overflow-hidden rounded-lg mb-4">
+                <div className="aspect-video overflow-hidden rounded-lg mb-4 relative">
                   <Image
                     src={urlFor(post.mainImage).width(400).height(225).url()}
                     alt={post.mainImage.alt || post.title}
