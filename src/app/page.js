@@ -97,11 +97,11 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // Only fetch if we've completed the restoration process
-    if (hasRestored.current) {
+    // Fetch posts if we've completed the restoration process OR if we're on the first load
+    if (hasRestored.current || posts.length === 0) {
       fetchPosts();
     }
-  }, [page, fetchPosts]);
+  }, [page, fetchPosts, posts.length]);
 
   useEffect(() => {
     fetchCategories();

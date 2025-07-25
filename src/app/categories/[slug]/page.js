@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef, use } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { urlFor } from '@/sanity/lib';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -176,10 +177,11 @@ export default function CategoryPage({ params }) {
             <CardHeader>
               {post.mainImage && (
                 <div className="aspect-video overflow-hidden rounded-lg mb-4">
-                  <img
+                  <Image
                     src={urlFor(post.mainImage).width(400).height(225).url()}
                     alt={post.mainImage.alt || post.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 </div>
               )}

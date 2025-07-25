@@ -48,7 +48,7 @@ export default async function PostPage({ params }) {
         <Card className="max-w-2xl mx-auto text-center">
           <CardContent className="pt-6">
             <h1 className="text-2xl font-bold mb-4">Post not found</h1>
-            <p className="text-muted-foreground mb-6">The post you're looking for doesn't exist.</p>
+            <p className="text-muted-foreground mb-6">The post you&apos;re looking for doesn&apos;t exist.</p>
             <Button asChild>
               <Link href="/">← Back to Home</Link>
             </Button>

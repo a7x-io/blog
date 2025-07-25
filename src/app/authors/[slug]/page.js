@@ -43,7 +43,7 @@ export default async function AuthorPage({ params }) {
           <Card className="max-w-2xl mx-auto text-center">
             <CardContent className="pt-6">
               <h1 className="text-2xl font-bold mb-4">Author not found</h1>
-              <p className="text-muted-foreground mb-6">The author you're looking for doesn't exist.</p>
+              <p className="text-muted-foreground mb-6">The author you&apos;re looking for doesn&apos;t exist.</p>
               <Button asChild>
                 <Link href="/">← Back to Home</Link>
               </Button>
@@ -277,7 +277,7 @@ export default async function AuthorPage({ params }) {
                 <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2">No posts yet</h3>
                 <p className="text-muted-foreground">
-                  {author.name} hasn't published any posts yet.
+                  {author.name} hasn&apos;t published any posts yet.
                 </p>
               </CardContent>
             </Card>

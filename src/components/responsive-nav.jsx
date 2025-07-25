@@ -14,7 +14,6 @@ export function ResponsiveNav() {
   const navItems = [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
-    { href: '/studio', label: 'Studio' },
   ];
 
   return (

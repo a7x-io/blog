@@ -18,8 +18,58 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Raytoolkit - Next.js & Sanity CMS",
-  description: "A modern blog built with Next.js, Sanity CMS, and shadcn/ui",
+  title: {
+    default: "Raytoolkit - Modern Blog & Development Resources",
+    template: "%s | Raytoolkit"
+  },
+  description: "A modern blog featuring development tutorials, insights, and resources built with Next.js, Sanity CMS, and shadcn/ui",
+  keywords: ["blog", "development", "nextjs", "sanity", "tutorials", "web development"],
+  authors: [{ name: "Raytoolkit Team" }],
+  creator: "Raytoolkit",
+  publisher: "Raytoolkit",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://www.raytoolkit.com'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://www.raytoolkit.com',
+    title: 'Raytoolkit - Modern Blog & Development Resources',
+    description: 'A modern blog featuring development tutorials, insights, and resources built with Next.js, Sanity CMS, and shadcn/ui',
+    siteName: 'Raytoolkit',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Raytoolkit - Modern Blog & Development Resources',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Raytoolkit - Modern Blog & Development Resources',
+    description: 'A modern blog featuring development tutorials, insights, and resources built with Next.js, Sanity CMS, and shadcn/ui',
+    images: ['/og-image.jpg'],
+    creator: '@raytoolkit',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({ children }) {
