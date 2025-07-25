@@ -169,7 +169,7 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-4 leading-tight">
             <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Raytoolkit
+              Raytoolkit!
             </span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
