@@ -18,6 +18,25 @@ export function SearchComponent() {
   const [showResults, setShowResults] = useState(false);
   const [error, setError] = useState(null);
   const searchRef = useRef(null);
+  const inputRef = useRef(null);
+
+  // Keyboard shortcut to focus search
+  useEffect(() => {
+    function handleKeyDown(event) {
+      // Only trigger if not already typing in an input/textarea
+      if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+        return;
+      }
+      
+      if (event.key === '/') {
+        event.preventDefault();
+        inputRef.current?.focus();
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Close results when clicking outside
   useEffect(() => {
@@ -101,7 +120,7 @@ export function SearchComponent() {
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           type="text"
-          placeholder="Search posts..."
+          placeholder="Search posts... (press / to jump)"
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -109,6 +128,7 @@ export function SearchComponent() {
           }}
           onFocus={() => setShowResults(true)}
           className="pl-10 pr-10 w-full md:w-64 lg:w-80"
+          ref={inputRef}
         />
         {isSearching && (
           <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground animate-spin" />
@@ -146,7 +166,7 @@ export function SearchComponent() {
                 <Link
                   key={post._id}
                   href={`/posts/${post.slug?.current || post._id}`}
-                  className="block p-3 rounded-md hover:bg-accent transition-colors"
+                  className="block p-3 rounded-md hover:bg-blue-50 hover:border-blue-200 hover:shadow-md hover:scale-[1.02] transition-all duration-200 border border-transparent"
                   onClick={handleResultClick}
                 >
                   <div className="flex gap-3">
@@ -162,7 +182,7 @@ export function SearchComponent() {
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-sm line-clamp-1">{post.title}</h4>
+                      <h4 className="font-medium text-sm line-clamp-1 hover:text-blue-600 transition-colors">{post.title}</h4>
                       <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
                         {post.intro || getExcerpt(post.body) || ''}
                       </p>
