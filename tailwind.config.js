@@ -8,14 +8,14 @@ module.exports = {
   theme: {
   	extend: {
   		colors: {
-  			'ray-bg': '#0a0a0a',
-  			'ray-surface': '#18181b',
-  			'ray-card': '#232326',
-  			'ray-accent': '#e11d48',
-  			'ray-accent-dark': '#be123c',
-  			'ray-muted': '#2a2a2e',
-  			'ray-text': '#ededed',
-  			'ray-text-muted': '#b3b3b3',
+  			'ray-bg': '#ffffff',
+  			'ray-surface': '#f8fafc',
+  			'ray-card': '#ffffff',
+  			'ray-accent': '#3b82f6',
+  			'ray-accent-dark': '#2563eb',
+  			'ray-muted': '#f1f5f9',
+  			'ray-text': '#1e293b',
+  			'ray-text-muted': '#64748b',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -58,10 +58,18 @@ module.exports = {
   			}
   		},
   		backgroundImage: {
-  			'ray-dark': 'linear-gradient(135deg, #18181b 0%, #232326 100%)'
+  			'ray-light': 'linear-gradient(135deg, #f8fafc 0%, #ffffff 100%)',
+  			'ray-dark': 'linear-gradient(135deg, #18181b 0%, #232326 100%)',
+  			'gradient-blue': 'linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)',
+  			'gradient-blue-light': 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+  			'gradient-hero': 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 50%, #bfdbfe 100%)'
   		},
   		boxShadow: {
-  			ray: '0 4px 32px 0 rgba(0,0,0,0.7)'
+  			ray: '0 4px 32px 0 rgba(0,0,0,0.7)',
+  			'ray-light': '0 4px 20px 0 rgba(59, 130, 246, 0.1)',
+  			'ray-soft': '0 2px 8px 0 rgba(0, 0, 0, 0.06)',
+  			'ray-medium': '0 4px 16px 0 rgba(0, 0, 0, 0.1)',
+  			'ray-strong': '0 8px 32px 0 rgba(0, 0, 0, 0.12)'
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

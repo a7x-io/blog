@@ -168,7 +168,7 @@ export function SearchComponent() {
                       </p>
                       <div className="flex items-center gap-2 mt-2">
                         <Avatar className="w-4 h-4">
-                          <AvatarImage src={post.author?.image ? urlFor(post.author.image).width(16).height(16).url() : undefined} />
+                          <AvatarImage src={post.author?.image ? urlFor(post.author.image).width(32).height(32).quality(90).url() : undefined} />
                           <AvatarFallback className="text-xs">
                             {post.author?.name?.charAt(0) || 'A'}
                           </AvatarFallback>

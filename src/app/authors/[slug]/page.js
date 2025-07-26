@@ -28,7 +28,7 @@ export default async function AuthorPage({ params }) {
 
   if (!author) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background bg-noise-subtle">
         <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container mx-auto px-4 py-4">
             <Button variant="ghost" asChild>
@@ -120,7 +120,7 @@ export default async function AuthorPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background bg-noise-subtle">
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4">
@@ -141,7 +141,7 @@ export default async function AuthorPage({ params }) {
             <div className="flex justify-center mb-6">
               <Avatar className="w-24 h-24 md:w-32 md:h-32">
                 <AvatarImage 
-                  src={author.image ? urlFor(author.image).width(128).height(128).url() : undefined} 
+                  src={author.image ? urlFor(author.image).width(256).height(256).quality(90).url() : undefined} 
                 />
                 <AvatarFallback className="text-2xl md:text-3xl">
                   {author.name?.charAt(0) || 'A'}

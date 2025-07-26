@@ -116,13 +116,13 @@ export default function CategoryPage({ params }) {
 
   // Smooth scroll to first new post
   useEffect(() => {
-    if (lastLoadedIndex >= 0 && gridRef.current) {
+    if (lastLoadedIndex >= 0 && gridRef.current && page > 0) {
       const posts = gridRef.current.children;
       if (posts[lastLoadedIndex]) {
         posts[lastLoadedIndex].scrollIntoView({ behavior: 'smooth' });
       }
     }
-  }, [lastLoadedIndex]);
+  }, [lastLoadedIndex, page]);
 
   if (error) {
     return (

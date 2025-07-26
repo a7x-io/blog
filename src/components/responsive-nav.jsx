@@ -37,7 +37,7 @@ export function ResponsiveNav() {
                     <NavigationMenuLink asChild>
                       <Link 
                         href={item.href} 
-                        className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+                        className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-blue-100 data-[state=open]:bg-blue-100"
                       >
                         {item.label}
                       </Link>
@@ -78,7 +78,7 @@ export function ResponsiveNav() {
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-accent hover:text-accent-foreground"
+                        className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-blue-600 hover:text-white"
                         onClick={() => setIsOpen(false)}
                       >
                         {item.label}

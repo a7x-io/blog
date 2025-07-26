@@ -61,7 +61,7 @@ export default async function PostPage({ params }) {
   const ytId = getYouTubeId(post.youtubeUrl);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background bg-noise-subtle">
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4">
@@ -88,7 +88,7 @@ export default async function PostPage({ params }) {
                   className="object-cover"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               </div>
             )}
 
@@ -113,7 +113,7 @@ export default async function PostPage({ params }) {
               <div className="flex items-center gap-4 text-sm text-muted-foreground mt-4">
                 <div className="flex items-center gap-2">
                   <Avatar className="w-6 h-6">
-                    <AvatarImage src={post.author?.image ? urlFor(post.author.image).width(24).height(24).url() : undefined} />
+                    <AvatarImage src={post.author?.image ? urlFor(post.author.image).width(48).height(48).quality(90).url() : undefined} />
                     <AvatarFallback className="text-xs">
                       {post.author?.name?.charAt(0) || 'A'}
                     </AvatarFallback>
